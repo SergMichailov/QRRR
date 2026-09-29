@@ -1,114 +1,124 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6572459851899803"
+      crossorigin="anonymous"
+    ></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Colored QR Code Generator</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 400px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-top: 0;
-        }
-        .form-group {
-            margin: 15px 0;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background: #764ba2;
-        }
-        #qrcode {
-            margin-top: 20px;
-            text-align: center;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: 0;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 400px;
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-top: 0;
+      }
+      .form-group {
+        margin: 15px 0;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+      button:hover {
+        background: #764ba2;
+      }
+      #qrcode {
+        margin-top: 20px;
+        text-align: center;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>Colored QR Code Generator</h1>
-        <div class="form-group">
-            <label>Enter Text or URL:</label>
-            <input type="text" id="textInput" placeholder="https://example.com" value="https://example.com">
-        </div>
-        <div class="form-group">
-            <label>Dark Color:</label>
-            <input type="color" id="darkColor" value="#000000">
-        </div>
-        <div class="form-group">
-            <label>Light Color:</label>
-            <input type="color" id="lightColor" value="#ffffff">
-        </div>
-        <button onclick="generateQR()">Generate QR Code</button>
-        <div id="qrcode"></div>
+      <h1>Colored QR Code Generator</h1>
+      <div class="form-group">
+        <label>Enter Text or URL:</label>
+        <input
+          type="text"
+          id="textInput"
+          placeholder="https://example.com"
+          value="https://example.com"
+        />
+      </div>
+      <div class="form-group">
+        <label>Dark Color:</label>
+        <input type="color" id="darkColor" value="#000000" />
+      </div>
+      <div class="form-group">
+        <label>Light Color:</label>
+        <input type="color" id="lightColor" value="#ffffff" />
+      </div>
+      <button onclick="generateQR()">Generate QR Code</button>
+      <div id="qrcode"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
-        // Generate QR code based on user input and color preferences
-        function generateQR() {
-            // Get user input values
-            const text = document.getElementById('textInput').value;
-            const darkColor = document.getElementById('darkColor').value;
-            const lightColor = document.getElementById('lightColor').value;
-            
-            // Clear previous QR code
-            document.getElementById('qrcode').innerHTML = '';
-            
-            // Create new QR code with custom colors
-            new QRCode(document.getElementById('qrcode'), {
-                text: text,
-                width: 256,
-                height: 256,
-                colorDark: darkColor,
-                colorLight: lightColor,
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
-        
-        // Generate initial QR code on page load
-        generateQR();
+      // Generate QR code based on user input and color preferences
+      function generateQR() {
+        // Get user input values
+        const text = document.getElementById('textInput').value;
+        const darkColor = document.getElementById('darkColor').value;
+        const lightColor = document.getElementById('lightColor').value;
+
+        // Clear previous QR code
+        document.getElementById('qrcode').innerHTML = '';
+
+        // Create new QR code with custom colors
+        new QRCode(document.getElementById('qrcode'), {
+          text: text,
+          width: 256,
+          height: 256,
+          colorDark: darkColor,
+          colorLight: lightColor,
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+      }
+
+      // Generate initial QR code on page load
+      generateQR();
     </script>
-</body>
+  </body>
 </html>
