@@ -8,117 +8,406 @@
     ></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Colored QR Code Generator</title>
+    <meta
+      name="description"
+      content="Create and download a custom-color QR code. Choose its size and error correction, check color contrast, and learn how to print and test it."
+    />
+    <meta name="theme-color" content="#f5f5ef" />
+    <title>QR Workshop | Make a custom QR code</title>
     <style>
+      :root {
+        color-scheme: light;
+        --ink: #202321;
+        --muted: #626a64;
+        --paper: #f5f5ef;
+        --white: #fff;
+        --line: #d9ddd5;
+        --green: #1d684d;
+        --green-dark: #154b39;
+        --coral: #e8755d;
+        --yellow: #f3d36b;
+      }
+      * { box-sizing: border-box; }
       body {
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         margin: 0;
+        color: var(--ink);
+        background-color: var(--paper);
+        background-image: radial-gradient(#dfe3d9 0.7px, transparent 0.7px);
+        background-size: 18px 18px;
+        font-family: "Trebuchet MS", Arial, sans-serif;
+        line-height: 1.6;
       }
-      .container {
-        background: white;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        width: 100%;
-        max-width: 400px;
+      a { color: var(--green-dark); text-underline-offset: 3px; }
+      a:hover { color: #a64936; }
+      .shell { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 72px;
+        border-bottom: 1px solid var(--line);
       }
+      .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+      .brand-mark {
+        display: grid;
+        width: 34px;
+        aspect-ratio: 1;
+        place-items: center;
+        color: var(--white);
+        background: var(--green);
+        border-radius: 8px;
+        font-size: 13px;
+        letter-spacing: 0;
+      }
+      .top-note { color: var(--muted); font-size: 13px; }
+      .intro { padding: 56px 0 28px; max-width: 760px; }
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--green);
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+      h1, h2, h3, p { margin-top: 0; }
+      h1, h2, h3 { line-height: 1.15; }
       h1 {
+        max-width: 700px;
+        margin-bottom: 16px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(38px, 6vw, 64px);
+        font-weight: 500;
+      }
+      .intro-copy { max-width: 650px; margin-bottom: 0; color: var(--muted); font-size: 17px; }
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+        border: 1px solid var(--line);
+        background: var(--white);
+        box-shadow: 8px 8px 0 var(--yellow);
+      }
+      .settings { padding: 28px; }
+      .preview {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 390px;
+        padding: 28px;
+        border-left: 1px solid var(--line);
+        background: #edf3ec;
         text-align: center;
-        color: #333;
-        margin-top: 0;
       }
-      .form-group {
-        margin: 15px 0;
-      }
-      label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-        color: #333;
-      }
-      input {
+      h2 { margin-bottom: 20px; font-size: 21px; }
+      .field { margin-bottom: 18px; }
+      label, .field-label { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 800; }
+      input[type="text"], select {
         width: 100%;
-        padding: 8px;
-        box-sizing: border-box;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 14px;
+        min-height: 46px;
+        padding: 10px 12px;
+        border: 1px solid #aeb7ac;
+        border-radius: 4px;
+        color: var(--ink);
+        background: var(--white);
+        font: inherit;
+        font-size: 15px;
       }
-      button {
-        width: 100%;
-        padding: 10px;
-        background: #667eea;
-        color: white;
-        border: none;
-        border-radius: 5px;
+      input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible {
+        outline: 3px solid var(--coral);
+        outline-offset: 3px;
+      }
+      .color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .color-control { display: flex; align-items: center; gap: 9px; }
+      input[type="color"] {
+        width: 43px;
+        height: 38px;
+        padding: 2px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--white);
         cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-        transition: background 0.3s;
       }
-      button:hover {
-        background: #764ba2;
+      .hex-value { color: var(--muted); font-family: monospace; font-size: 13px; }
+      .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+      button {
+        min-height: 46px;
+        padding: 10px 16px;
+        border: 1px solid var(--green);
+        border-radius: 4px;
+        color: var(--white);
+        background: var(--green);
+        font: inherit;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
       }
-      #qrcode {
-        margin-top: 20px;
-        text-align: center;
+      button:hover { background: var(--green-dark); }
+      button.secondary { color: var(--green-dark); background: transparent; }
+      button.secondary:hover { background: #e7eee8; }
+      button:disabled { cursor: not-allowed; opacity: 0.5; }
+      .privacy-note { margin: 16px 0 0; color: var(--muted); font-size: 12px; }
+      .qr-frame {
+        display: grid;
+        width: min(100%, 300px);
+        min-height: 260px;
+        aspect-ratio: 1;
+        place-items: center;
+        padding: 16px;
+        background: var(--white);
+        border: 1px solid var(--line);
+      }
+      #qrcode { display: grid; place-items: center; max-width: 100%; }
+      #qrcode canvas, #qrcode img { display: block; max-width: 100%; height: auto; }
+      .placeholder { max-width: 190px; color: var(--muted); font-size: 14px; }
+      .status { min-height: 24px; margin: 13px 0 0; color: var(--muted); font-size: 13px; }
+      .status.warning { color: #8a3f2f; font-weight: 700; }
+      .content-section { padding: 62px 0 0; }
+      .section-heading { max-width: 680px; margin-bottom: 26px; }
+      h2.section-title { margin-bottom: 10px; font-family: Georgia, "Times New Roman", serif; font-size: 34px; font-weight: 500; }
+      .section-lead { color: var(--muted); }
+      .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
+      .guide-item { padding: 22px 22px 22px 0; }
+      .guide-item + .guide-item { padding-left: 22px; border-left: 1px solid var(--line); }
+      .guide-number { color: #b35440; font-size: 12px; font-weight: 800; }
+      h3 { margin: 7px 0 9px; font-size: 17px; }
+      .guide-item p, .article-copy { margin-bottom: 0; color: var(--muted); font-size: 14px; }
+      .article-band { margin-top: 50px; padding: 34px; background: #e9eee7; }
+      .article-band h2 { margin-bottom: 10px; font-family: Georgia, "Times New Roman", serif; font-size: 28px; font-weight: 500; }
+      .article-copy { max-width: 780px; }
+      .article-copy p { margin: 0 0 14px; }
+      .article-copy p:last-child { margin-bottom: 0; }
+      .faq-list { max-width: 800px; border-top: 1px solid var(--line); }
+      .faq-item { padding: 20px 0; border-bottom: 1px solid var(--line); }
+      .faq-item h3 { margin: 0 0 7px; }
+      .faq-item p { margin: 0; color: var(--muted); font-size: 14px; }
+      footer { margin-top: 60px; padding: 22px 0 30px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+      footer p { margin: 0; }
+      @media (max-width: 720px) {
+        .intro { padding-top: 40px; }
+        .workspace { grid-template-columns: 1fr; }
+        .preview { min-height: 340px; border-top: 1px solid var(--line); border-left: 0; }
+        .guide-grid { grid-template-columns: 1fr; }
+        .guide-item, .guide-item + .guide-item { padding: 18px 0; border-left: 0; border-bottom: 1px solid var(--line); }
+        .article-band { margin-top: 38px; padding: 24px; }
+      }
+      @media (max-width: 440px) {
+        .shell { width: min(100% - 28px, 1080px); }
+        .top-note { max-width: 130px; text-align: right; }
+        .settings { padding: 21px; }
+        .color-row, .form-row { grid-template-columns: 1fr; gap: 0; }
+        .actions button { flex: 1 1 100%; }
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <h1>Colored QR Code Generator</h1>
-      <div class="form-group">
-        <label>Enter Text or URL:</label>
-        <input
-          type="text"
-          id="textInput"
-          placeholder="https://example.com"
-          value="https://example.com"
-        />
-      </div>
-      <div class="form-group">
-        <label>Dark Color:</label>
-        <input type="color" id="darkColor" value="#000000" />
-      </div>
-      <div class="form-group">
-        <label>Light Color:</label>
-        <input type="color" id="lightColor" value="#ffffff" />
-      </div>
-      <button onclick="generateQR()">Generate QR Code</button>
-      <div id="qrcode"></div>
-    </div>
+    <header class="shell topbar">
+      <a class="brand" href="#top" aria-label="QR Workshop home">
+        <span class="brand-mark" aria-hidden="true">QR</span>
+        <span>QR Workshop</span>
+      </a>
+      <span class="top-note">A practical guide to making scannable codes</span>
+    </header>
+
+    <main id="top" class="shell">
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">Free browser-based tool</p>
+        <h1 id="page-title">Make a QR code that scans.</h1>
+        <p class="intro-copy">Create a custom-color QR code for a link, contact detail, or short message. Set its size and error correction, then download a PNG and test it before sharing.</p>
+      </section>
+
+      <section class="workspace" aria-label="QR code generator">
+        <form class="settings" id="qrForm">
+          <h2>Build your code</h2>
+          <div class="field">
+            <label for="textInput">Text or destination URL</label>
+            <input type="text" id="textInput" maxlength="1200" placeholder="https://your-site.com/page" autocomplete="url" required />
+          </div>
+          <div class="field">
+            <span class="field-label">Code colors</span>
+            <div class="color-row">
+              <label>Foreground <span class="color-control"><input type="color" id="darkColor" value="#173d32" aria-label="QR code foreground color" /><span class="hex-value" id="darkHex">#173D32</span></span></label>
+              <label>Background <span class="color-control"><input type="color" id="lightColor" value="#ffffff" aria-label="QR code background color" /><span class="hex-value" id="lightHex">#FFFFFF</span></span></label>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="sizeInput">Image size</label>
+              <select id="sizeInput">
+                <option value="256">256 px - web</option>
+                <option value="384" selected>384 px - general use</option>
+                <option value="640">640 px - print</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="correctionInput">Error correction</label>
+              <select id="correctionInput">
+                <option value="L">Low - clean surfaces</option>
+                <option value="M">Medium - everyday use</option>
+                <option value="Q">Quartile - some wear</option>
+                <option value="H" selected>High - more damage tolerance</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <button type="submit">Generate QR code</button>
+            <button class="secondary" type="button" id="downloadButton" disabled>Download PNG</button>
+          </div>
+          <p class="privacy-note">Your text is used in your browser to create the QR image. Do not encode passwords or other secrets in a QR code.</p>
+        </form>
+        <div class="preview">
+          <div class="qr-frame"><div id="qrcode"><p class="placeholder">Your QR code will appear here after you generate it.</p></div></div>
+          <p class="status" id="status" role="status" aria-live="polite">Enter content to get started.</p>
+        </div>
+      </section>
+
+      <section class="content-section" aria-labelledby="how-title">
+        <div class="section-heading">
+          <p class="eyebrow">A quick field guide</p>
+          <h2 class="section-title" id="how-title">From screen to successful scan</h2>
+          <p class="section-lead">A QR code is only useful when people can scan it and trust where it leads. These checks help avoid common problems before you print or publish one.</p>
+        </div>
+        <div class="guide-grid">
+          <article class="guide-item">
+            <span class="guide-number">01 / DESTINATION</span>
+            <h3>Use a short, stable link</h3>
+            <p>Long URLs create denser patterns that can be harder to scan. Use a destination you control, check it on a phone, and avoid links that expire or require unexpected sign-in.</p>
+          </article>
+          <article class="guide-item">
+            <span class="guide-number">02 / CONTRAST</span>
+            <h3>Keep dark modules on light</h3>
+            <p>Scanners need a clear difference between the code and its background. Avoid pale foreground colors, gradients, transparent backgrounds, and placing a code over a photograph.</p>
+          </article>
+          <article class="guide-item">
+            <span class="guide-number">03 / OUTPUT</span>
+            <h3>Test the final size</h3>
+            <p>Scan the actual printed proof or on-screen design with more than one phone. Keep a clear border around the code and do not stretch, crop, or cover its corners.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="article-band" aria-labelledby="correction-title">
+        <h2 id="correction-title">Choosing error correction</h2>
+        <div class="article-copy">
+          <p>Error correction lets a QR code remain readable when some of its data is obscured or damaged. Higher levels add more redundant data, which can make the pattern denser. That extra tolerance is useful for labels that may get scratched, but it does not make an unreadable design reliably scannable.</p>
+          <p>For a clean digital display, Low or Medium is often enough. For a printed item handled frequently, Quartile or High can offer more resilience. If you use a logo or decorative treatment, keep it small and test the finished code; the simplest, highest-contrast design is usually the most dependable.</p>
+          <p>Image dimensions are not a substitute for print resolution. When preparing a printed piece, place the downloaded PNG at an appropriate physical size, preserve its square proportions, and scan a real proof at the distance people will use it.</p>
+        </div>
+      </section>
+
+      <section class="content-section" aria-labelledby="faq-title">
+        <div class="section-heading">
+          <p class="eyebrow">Common questions</p>
+          <h2 class="section-title" id="faq-title">Before you publish</h2>
+        </div>
+        <div class="faq-list">
+          <article class="faq-item">
+            <h3>Does this generator upload my text?</h3>
+            <p>The QR image is generated in your browser using a JavaScript library loaded by this page. The entered text is not sent to a QR-generation service by this tool. The destination you encode may still be visible to anyone who scans the code, so do not include private information.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Why does my code fail to scan?</h3>
+            <p>Common causes include weak color contrast, a very long destination, a code printed too small, a missing clear border, or a damaged image. Try a dark foreground on white, a shorter link, and a fresh download; then scan the actual final design.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Can I use a QR code for a permanent destination?</h3>
+            <p>The encoded value does not change after download. If the destination URL changes, the QR image will still point to the old address. Use a short link on a domain you control when you need to update the destination later.</p>
+          </article>
+          <article class="faq-item">
+            <h3>Which file should I download?</h3>
+            <p>This tool downloads a PNG, which is convenient for websites and many common layouts. For a large print job, check the resolution at the intended physical size and request a vector format from a suitable design tool if the printer requires one.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="shell">
+      <p>QR Workshop creates QR images for general use. Always verify the destination and test the final code before distributing it.</p>
+    </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
-      // Generate QR code based on user input and color preferences
-      function generateQR() {
-        // Get user input values
-        const text = document.getElementById('textInput').value;
-        const darkColor = document.getElementById('darkColor').value;
-        const lightColor = document.getElementById('lightColor').value;
+      const form = document.getElementById('qrForm');
+      const output = document.getElementById('qrcode');
+      const status = document.getElementById('status');
+      const downloadButton = document.getElementById('downloadButton');
+      const colorInputs = [
+        { input: document.getElementById('darkColor'), label: document.getElementById('darkHex') },
+        { input: document.getElementById('lightColor'), label: document.getElementById('lightHex') },
+      ];
 
-        // Clear previous QR code
-        document.getElementById('qrcode').innerHTML = '';
+      function colorLuminance(hex) {
+        const channels = hex.match(/[a-f\d]{2}/gi).map((channel) => parseInt(channel, 16) / 255);
+        const linear = channels.map((channel) => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4);
+        return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+      }
 
-        // Create new QR code with custom colors
-        new QRCode(document.getElementById('qrcode'), {
-          text: text,
-          width: 256,
-          height: 256,
-          colorDark: darkColor,
-          colorLight: lightColor,
-          correctLevel: QRCode.CorrectLevel.H,
+      function updateColorLabels() {
+        colorInputs.forEach(({ input, label }) => {
+          label.textContent = input.value.toUpperCase();
         });
       }
 
-      // Generate initial QR code on page load
-      generateQR();
+      colorInputs.forEach(({ input }) => input.addEventListener('input', updateColorLabels));
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const text = document.getElementById('textInput').value.trim();
+        if (!text) {
+          status.textContent = 'Enter text or a URL before generating a code.';
+          status.classList.add('warning');
+          return;
+        }
+        if (typeof QRCode === 'undefined') {
+          status.textContent = 'The QR library could not load. Check your connection and try again.';
+          status.classList.add('warning');
+          return;
+        }
+
+        output.innerHTML = '';
+        status.classList.remove('warning');
+        const levels = {
+          L: QRCode.CorrectLevel.L,
+          M: QRCode.CorrectLevel.M,
+          Q: QRCode.CorrectLevel.Q,
+          H: QRCode.CorrectLevel.H,
+        };
+        const size = Number(document.getElementById('sizeInput').value);
+
+        try {
+          new QRCode(output, {
+            text,
+            width: size,
+            height: size,
+            colorDark: document.getElementById('darkColor').value,
+            colorLight: document.getElementById('lightColor').value,
+            correctLevel: levels[document.getElementById('correctionInput').value],
+          });
+          downloadButton.disabled = false;
+          const contrast = (Math.max(colorLuminance(colorInputs[0].input.value), colorLuminance(colorInputs[1].input.value)) + 0.05) /
+            (Math.min(colorLuminance(colorInputs[0].input.value), colorLuminance(colorInputs[1].input.value)) + 0.05);
+          status.textContent = contrast < 4.5
+            ? 'Code generated. These colors have low contrast; choose a darker foreground and test a scan.'
+            : 'Code generated. Scan it with your phone before sharing or printing.';
+          status.classList.toggle('warning', contrast < 4.5);
+        } catch (error) {
+          output.innerHTML = '<p class="placeholder">This content could not be encoded. Try a shorter text or URL.</p>';
+          downloadButton.disabled = true;
+          status.textContent = 'Could not generate a code for this content. Try a shorter entry.';
+          status.classList.add('warning');
+        }
+      });
+
+      downloadButton.addEventListener('click', () => {
+        const canvas = output.querySelector('canvas');
+        if (!canvas) {
+          status.textContent = 'Generate a QR code before downloading.';
+          return;
+        }
+        const link = document.createElement('a');
+        link.download = 'qr-workshop-code.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
     </script>
   </body>
 </html>
